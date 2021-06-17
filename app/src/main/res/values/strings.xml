@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">DrawTouch</string>
+    <string name="to_ondraw">To Ondraw</string>
+    <string name="to_imagefilterview">To ImageFilterView</string>
+</resources>
