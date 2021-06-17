@@ -2,8 +2,11 @@ package com.aditya.drawtouch
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.View
 import android.widget.SeekBar
 import com.aditya.drawtouch.databinding.ActivityImageFilterViewBinding
+import com.github.chrisbanes.photoview.PhotoViewAttacher
 
 class ImageFilterViewActivity : AppCompatActivity() {
     private lateinit var binding: ActivityImageFilterViewBinding
@@ -75,5 +78,8 @@ class ImageFilterViewActivity : AppCompatActivity() {
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {}
             })
+
+        val attacher = PhotoViewAttacher(binding.imagefilterview)
+
     }
 }
