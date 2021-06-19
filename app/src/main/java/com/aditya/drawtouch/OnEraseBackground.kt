@@ -2,11 +2,20 @@ package com.aditya.drawtouch
 
 import android.content.Context
 import android.graphics.*
+import android.os.Build
+import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import androidx.annotation.RequiresApi
 
-class OnEraseBackground(context: Context): View(context) {
+
+class OnEraseBackground: View {
+    constructor(context: Context) : super(context) {
+    }
+
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
+    }
     private var stroke = 50f
     private var path = Path()
     private val mSourceCanvas = Canvas()
@@ -16,7 +25,9 @@ class OnEraseBackground(context: Context): View(context) {
     private var motionTouchEventY = 0f
     private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
     val bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pp)
-    val mSourceBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888)
+    lateinit var mSourceBitmap: Bitmap
+    lateinit var m: Matrix
+
     // Set up the paint with which to draw.
     private val paint = Paint().apply {
         alpha = 0
@@ -31,14 +42,22 @@ class OnEraseBackground(context: Context): View(context) {
         xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_OUT)
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        m = Matrix()
+        m.setRectToRect(RectF(0f, 0f, bitmap.getWidth().toFloat(), bitmap.getHeight().toFloat()), RectF(0f, 0f, w.toFloat(), h.toFloat())
+                , Matrix.ScaleToFit.CENTER)
+        mSourceBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         mSourceCanvas.setBitmap(mSourceBitmap)
-        mSourceCanvas.drawBitmap(bitmap, 0f, 0f, null)
+        mSourceCanvas.drawBitmap(bitmap, m, null)
         mSourceCanvas.drawPath(path, paint)
 
         //Draw bitmap
-        canvas?.drawBitmap(mSourceBitmap, 0f, 0f, null);
+        canvas?.drawBitmap(mSourceBitmap, matrix, null)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -47,13 +66,11 @@ class OnEraseBackground(context: Context): View(context) {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> touchStart()
             MotionEvent.ACTION_MOVE -> touchMove()
-            MotionEvent.ACTION_UP -> touchUp()
         }
         return true
     }
 
     private fun touchStart() {
-        path.reset()
         path.moveTo(motionTouchEventX, motionTouchEventY)
         currentX = motionTouchEventX
         currentY = motionTouchEventY
@@ -75,8 +92,4 @@ class OnEraseBackground(context: Context): View(context) {
         invalidate()
     }
 
-    private fun touchUp() {
-        // Reset the path so it doesn't get drawn again.
-        path.reset()
-    }
 }
