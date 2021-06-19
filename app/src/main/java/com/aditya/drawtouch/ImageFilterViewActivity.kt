@@ -1,4 +1,4 @@
-package com.aditya.drawtouch
+ package com.aditya.drawtouch
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -80,6 +80,6 @@ class ImageFilterViewActivity : AppCompatActivity() {
             })
 
         val attacher = PhotoViewAttacher(binding.imagefilterview)
-
+        attacher.isZoomable = true
     }
 }

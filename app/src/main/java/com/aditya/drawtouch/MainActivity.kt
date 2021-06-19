@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         binding.btnOndraw.setOnClickListener(this)
         binding.toImagefilter.setOnClickListener(this)
+        binding.btnToEraser.setOnClickListener(this)
     }
 
     override fun onClick(v: View) {
@@ -28,6 +29,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.to_imagefilter -> {
                 val intent = Intent(this@MainActivity, ImageFilterViewActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.btn_to_eraser -> {
+                val intent = Intent(this@MainActivity, RemoveBackgroundActivity::class.java)
                 startActivity(intent)
             }
         }
