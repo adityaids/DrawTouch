@@ -1,32 +1,31 @@
 package com.aditya.drawtouch
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
-import android.os.Build
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
-import androidx.annotation.RequiresApi
+import kotlin.math.abs
 
 
 class OnEraseBackground: View {
-    constructor(context: Context) : super(context) {
-    }
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-    }
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
+
     private var stroke = 50f
     private var path = Path()
     private val mSourceCanvas = Canvas()
     private var currentX = 0f
     private var currentY = 0f
-    private var motionTouchEventX = 0f
-    private var motionTouchEventY = 0f
+    private var motionTouchEventX: Float = 0f
+    private var motionTouchEventY: Float = 0f
     private val touchTolerance = ViewConfiguration.get(context).scaledTouchSlop
-    val bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.pp)
-    lateinit var mSourceBitmap: Bitmap
-    lateinit var m: Matrix
+    private val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.pp)
+    private lateinit var mSourceBitmap: Bitmap
+    private lateinit var m: Matrix
 
     // Set up the paint with which to draw.
     private val paint = Paint().apply {
@@ -45,7 +44,7 @@ class OnEraseBackground: View {
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
         m = Matrix()
-        m.setRectToRect(RectF(0f, 0f, bitmap.getWidth().toFloat(), bitmap.getHeight().toFloat()), RectF(0f, 0f, w.toFloat(), h.toFloat())
+        m.setRectToRect(RectF(0f, 0f, bitmap.width.toFloat(), bitmap.height.toFloat()), RectF(0f, 0f, w.toFloat(), h.toFloat())
                 , Matrix.ScaleToFit.CENTER)
         mSourceBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888)
     }
@@ -60,6 +59,7 @@ class OnEraseBackground: View {
         canvas?.drawBitmap(mSourceBitmap, matrix, null)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         motionTouchEventX = event.x
         motionTouchEventY = event.y
@@ -77,8 +77,8 @@ class OnEraseBackground: View {
     }
 
     private fun touchMove() {
-        val dx = Math.abs(motionTouchEventX - currentX)
-        val dy = Math.abs(motionTouchEventY - currentY)
+        val dx = abs(motionTouchEventX - currentX)
+        val dy = abs(motionTouchEventY - currentY)
         if (dx >= touchTolerance || dy >= touchTolerance) {
             // QuadTo() adds a quadratic bezier from the last point,
             // approaching control point (x1,y1), and ending at (x2,y2).
